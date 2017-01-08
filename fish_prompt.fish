@@ -8,6 +8,7 @@ set set_green (set_color -o green)
 set set_magenta (set_color magenta)
 set set_normal (set_color normal)
 
+
 set zephyr_PROMPT_SYMBOL "$set_green➜ $set_normal"
 
 # node
@@ -22,6 +23,10 @@ set zephyr_GIT_DIRTY "$set_red✗$set_normal"
 
 function _is_git_dirty
    echo (command git status -s --ignore-submodules=dirty ^/dev/null)
+end
+
+function _git_branch_name
+  echo (command git symbolic-ref HEAD ^/dev/null | sed -e 's|^refs/heads/||')
 end
 
 # node
