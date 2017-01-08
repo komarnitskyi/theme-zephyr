@@ -10,6 +10,7 @@ set set_normal (set_color normal)
 
 
 set zephyr_PROMPT_SYMBOL "$set_green➜ $set_normal"
+set zephyr_PROMPT_SYMBOL_ROOT "$set_green\$ $set_normal"
 
 # node
 set zephyr_NODE_SYMBOL "$set_green⬢ $set_normal"
@@ -33,6 +34,7 @@ end
 function _get_node_version
   echo (command node -v)
 end
+
 
 function fish_prompt
   set -l last_status $status
@@ -72,11 +74,19 @@ function fish_prompt
 
   end
 
+  # Check is user has superpower
+if test $USER = 'root'
+  set _prompt_symbol $zephyr_PROMPT_SYMBOL_ROOT
+else
+  set _prompt_symbol $zephyr_PROMPT_SYMBOL
+end
+
+
   # Notify if a command took more than 5 minutes
   if [ "$CMD_DURATION" -gt 300000 ]
     echo The last command took (math "$CMD_DURATION/1000") seconds.
   end
   echo ''
   echo -s $status_indicator $cwd $git_info $normal '' $node_info ''
-  echo -s $zephyr_PROMPT_SYMBOL ' '
+  echo -s $_prompt_symbol ' '
 end

@@ -21,6 +21,10 @@ $ omf install zephyr
 
 * Displays git information in the command prompt when available.
 * Displays node version when available
+* Indicate is User has superpower:
+  * ```➜``` - default prompt
+  * ```$``` - with SU power
+
 
 
 ## Screenshot
