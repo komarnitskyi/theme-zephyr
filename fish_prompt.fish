@@ -47,7 +47,7 @@ function fish_prompt
   end
 
 
-  set -l cwd $set_cyan(pwd)
+  set -l cwd $set_cyan(prompt_pwd)
 
   if [ (_get_node_version) ]
     set -l node_version (_get_node_version)
