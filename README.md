@@ -13,7 +13,7 @@
 ## Install
 
 ```fish
-$ omf install zephyr
+$ omf install https://github.com/komarnitskyi/theme-zephyr
 ```
 
 
