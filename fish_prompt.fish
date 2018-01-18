@@ -39,13 +39,7 @@ end
 function fish_prompt
   set -l last_status $status
 
-
-  if test $last_status = 0
-      set status_indicator "$set_green✔︎ "
-  else
-      set status_indicator "$set_red✗ "
-  end
-
+  set status_indicator "$set_green✔︎ "
 
   set -l cwd $set_cyan(prompt_pwd)
 
@@ -64,22 +58,15 @@ function fish_prompt
       set git_status "$zephyr_GIT_CLEAN"
     end
 
-    if test (_git_branch_name) = 'master'
-      set -l git_branch (_git_branch_name)
-      set git_info "$set_normal ( $set_red$git_branch$set_normal $git_status )"
-    else
-      set -l git_branch (_git_branch_name)
-      set git_info "$set_normal ( $set_magenta$git_branch$set_normal $git_status )"
-    end
+		set -l git_branch (_git_branch_name)
+		set git_info "$set_normal ( $set_magenta$git_branch$set_normal $git_status )"
+
 
   end
 
   # Check is user has superpower
-if test $USER = 'root'
-  set _prompt_symbol $zephyr_PROMPT_SYMBOL_ROOT
-else
   set _prompt_symbol $zephyr_PROMPT_SYMBOL
-end
+
 
 
   # Notify if a command took more than 5 minutes
