@@ -17,8 +17,11 @@ set zephyr_NODE_SYMBOL "$set_green⬢ $set_normal"
 
 # git
 
-set zephyr_GIT_CLEAN "$set_green✔︎$set_normal"
+set zephyr_GIT_CLEAN "$set_green✔$set_normal"
 set zephyr_GIT_DIRTY "$set_red✗$set_normal"
+set zephyr_GIT_BEHIND "$set_magenta⇣$set_normal"
+set zephyr_GIT_AHEAD "$set_cyan⇡$set_normal"
+set zephyr_GIT_DIVERGED "$set_cyan⇡$set_magenta⇣$set_normal"
 
 # git
 
@@ -54,7 +57,25 @@ function fish_prompt
     set node_info " $zephyr_NODE_SYMBOL $set_green$node_version$set_normal"
   end
 
+set -l push_or_pull (command git status --porcelain ^/dev/null -b)
+set -l is_behind
+set -l is_ahead
 
+  if test (string match '*behind*' $push_or_pull)
+    set is_behind true
+  end
+
+  if test (string match '*ahead*' $push_or_pull)
+    set is_ahead true
+  end
+
+  if test "$is_ahead" = true -a "$is_behind" = true
+		set git_diverged_status "$zephyr_GIT_DIVERGED"
+	else if test "$is_ahead" = true
+		set git_diverged_status "$zephyr_GIT_AHEAD"
+	else if test "$is_behind" = true
+		set git_diverged_status "$zephyr_GIT_BEHIND"
+	end
 
   if [ (_git_branch_name) ]
 
@@ -66,10 +87,10 @@ function fish_prompt
 
     if test (_git_branch_name) = 'master'
       set -l git_branch (_git_branch_name)
-      set git_info "$set_normal ( $set_red$git_branch$set_normal $git_status )"
+      set git_info "$set_normal ( $set_red$git_branch$set_normal $git_status $git_diverged_status )"
     else
       set -l git_branch (_git_branch_name)
-      set git_info "$set_normal ( $set_magenta$git_branch$set_normal $git_status )"
+      set git_info "$set_normal ( $set_magenta$git_branch$set_normal $git_status $git_diverged_status )"
     end
 
   end
