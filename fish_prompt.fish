@@ -42,8 +42,8 @@ function fish_prompt
   set -l cwd $set_cyan(prompt_pwd)
 
   if [ (_get_node_version) ]
-    set -l node_version (string sub -s 2 -l 3 (node -v))
-    set node_info " $zephyr_NODE_SYMBOL$set_green$node_version$set_normal"
+    set -l node_version (string sub -s 2 -l 5 (node -v))
+    set node_info " $zephyr_NODE_SYMBOL$set_green $node_version$set_normal"
   end
 
 set -l push_or_pull (command git status --porcelain ^/dev/null -b)
