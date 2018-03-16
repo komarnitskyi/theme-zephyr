@@ -1,5 +1,8 @@
 # name: prfx
 
+set fish_color_command green
+set fish_color_error red
+
 set set_cyan (set_color -o cyan)
 set set_yellow (set_color -o yellow)
 set set_red (set_color -o red)
