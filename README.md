@@ -18,8 +18,8 @@ omf theme zephyr
 ```
 
 ## Requirements
-* [fishshell][https://fishshell.com/] > v2.3
-* [oh-my-fish][https://fishshell.com/] > v5
+* [fishshell](https://fishshell.com/) > v2.3
+* [oh-my-fish](https://fishshell.com/) > v5
 
 ## Update
 
