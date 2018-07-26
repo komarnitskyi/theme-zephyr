@@ -103,12 +103,19 @@ else
   end
 end
 
+if test $CMD_DURATION -lt 1000
+  set duration ''
+else
+  set duration $set_magenta ' ' (math "$CMD_DURATION/1000")'s'
+end
+
 
   # Notify if a command took more than 5 minutes
   # if [ "$CMD_DURATION" -gt 300000 ]
   #   echo The last command took (math "$CMD_DURATION/1000") seconds.
   # end
   echo ''
-  echo -s $cwd $git_info $normal '' $node_info ''
+  echo -s $cwd $git_info $normal '' $node_info '' $duration ''
+  
   echo -s $_prompt_symbol ' '
 end
