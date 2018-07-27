@@ -45,7 +45,7 @@ function fish_prompt
   set -l cwd $set_cyan(prompt_pwd)
 
   if [ (_get_node_version) ]
-    set -l node_version (string sub -s 2 -l 5 (node -v))
+    set -l node_version (string replace -r "\Av(\d*\.\d*.(0|[1-9]{1,}))\Z" '$1' (node -v))
     set node_info " $zephyr_NODE_SYMBOL$set_green $node_version$set_normal"
   end
 
