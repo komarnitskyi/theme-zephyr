@@ -35,9 +35,10 @@ end
 
 # node
 function _get_node_version
-  echo (command node -v)
+	if [ (command which node) ]
+		echo (command node -v)
+	end
 end
-
 
 function fish_prompt
   set -l last_status $status
@@ -116,6 +117,6 @@ end
   # end
   echo ''
   echo -s $cwd $git_info $normal '' $node_info '' $duration ''
-  
+
   echo -s $_prompt_symbol ' '
 end
