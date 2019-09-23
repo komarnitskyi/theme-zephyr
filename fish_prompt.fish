@@ -26,97 +26,95 @@ set zephyr_GIT_DIVERGED "$set_cyan ⇡$set_magenta⇣$set_normal"
 # git
 
 function _is_git_dirty
-   echo (command git status -s --ignore-submodules=dirty ^/dev/null)
+    echo (command git status -s --ignore-submodules=dirty ^/dev/null)
 end
 
 function _git_branch_name
-  echo (command git symbolic-ref HEAD ^/dev/null | sed -e 's|^refs/heads/||')
+    echo (command git symbolic-ref HEAD ^/dev/null | sed -e 's|^refs/heads/||')
 end
 
 # node
 function _get_node_version
-	if [ (command which node) ]
-		echo (command node -v)
-	end
+    if [ (command which node) ]
+        echo (command node -v)
+    end
 end
 
 function fish_prompt
-  set -l last_status $status
+    set -l last_status $status
 
-  set -l cwd $set_cyan(prompt_pwd)
+    set -l cwd $set_cyan(prompt_pwd)
 
-  if [ (_get_node_version) ]
-    set -l node_version (string replace -r "\Av(\d*\.\d*.(0|[1-9]{1,}))\Z" '$1' (node -v))
-    set node_info " $zephyr_NODE_SYMBOL$set_green $node_version$set_normal"
-  end
-
-set -l push_or_pull (command git status --porcelain ^/dev/null -b)
-set -l is_behind
-set -l is_ahead
-set -l git_on 'on '
-
-  if test (string match '*behind*' $push_or_pull)
-    set is_behind true
-  end
-
-  if test (string match '*ahead*' $push_or_pull)
-    set is_ahead true
-  end
-
-  if test "$is_ahead" = true -a "$is_behind" = true
-		set git_diverged_status "$zephyr_GIT_DIVERGED"
-	else if test "$is_ahead" = true
-		set git_diverged_status "$zephyr_GIT_AHEAD"
-	else if test "$is_behind" = true
-		set git_diverged_status "$zephyr_GIT_BEHIND"
-	end
-
-  if [ (_git_branch_name) ]
-
-    if [ (_is_git_dirty) ]
-      set git_powerline $set_red""
-      else
-      set git_powerline $set_green""
+    if [ (_get_node_version) ]
+        set -l node_version (string replace -r "\Av(\d*\.\d*.(0|[1-9]{1,}))\Z" '$1' (node -v))
+        set node_info " $zephyr_NODE_SYMBOL$set_green $node_version$set_normal"
     end
 
-    if test (_git_branch_name) = 'master'
-      set -l git_branch (_git_branch_name)
-      set git_info "$set_normal $set_cyan$git_on$git_powerline $set_red$git_branch$set_normal$git_diverged_status$set_cyan"
+    set -l push_or_pull (command git status --porcelain ^/dev/null -b)
+    set -l is_behind
+    set -l is_ahead
+    set -l git_on 'on '
+
+    if test (string match '*behind*' $push_or_pull)
+        set is_behind true
+    end
+
+    if test (string match '*ahead*' $push_or_pull)
+        set is_ahead true
+    end
+
+    if test "$is_ahead" = true -a "$is_behind" = true
+        set git_diverged_status "$zephyr_GIT_DIVERGED"
+    else if test "$is_ahead" = true
+        set git_diverged_status "$zephyr_GIT_AHEAD"
+    else if test "$is_behind" = true
+        set git_diverged_status "$zephyr_GIT_BEHIND"
+    end
+
+    if [ (_git_branch_name) ]
+
+        if [ (_is_git_dirty) ]
+            set git_powerline $set_red""
+        else
+            set git_powerline $set_green""
+        end
+
+        if test (_git_branch_name) = 'master'
+            set -l git_branch (_git_branch_name)
+            set git_info "$set_normal $set_cyan$git_on$git_powerline $set_red$git_branch$set_normal$git_diverged_status$set_cyan"
+        else
+            set -l git_branch (_git_branch_name)
+            set git_info "$set_normal $set_cyan$git_on$git_powerline $set_red$git_branch$set_normal$git_diverged_status$set_cyan"
+        end
+    end
+
+    set zephyr_GIT_USER_NAME (command git config user.name)
+    set zephyr_GIT_USER_EMAIL (command git config user.email)
+
+    set zephyr_GIT_USER_INFO "$set_cyan by $set_green$zephyr_GIT_USER_NAME ( $set_magenta$zephyr_GIT_USER_EMAIL$set_green ) $set_normal"
+    # Check is user has superpower
+    if test $USER = 'root'
+        if test $last_status = 0
+            set _prompt_symbol $set_green$zephyr_PROMPT_SYMBOL_ROOT
+        else
+            set _prompt_symbol $set_red$zephyr_PROMPT_SYMBOL_ROOT
+        end
     else
-      set -l git_branch (_git_branch_name)
-      set git_info "$set_normal $set_cyan$git_on$git_powerline $set_red$git_branch$set_normal$git_diverged_status$set_cyan"
+        if test $last_status = 0
+            set _prompt_symbol $set_green$zephyr_PROMPT_SYMBOL
+        else
+            set _prompt_symbol $set_red$zephyr_PROMPT_SYMBOL
+        end
     end
 
-  end
+    if test $CMD_DURATION -lt 1000
+        set duration ''
+    else
+        set duration $set_magenta ' ' (math "$CMD_DURATION/1000")'s'
+    end
 
-  # Check is user has superpower
-if test $USER = 'root'
-  if test $last_status = 0
-    set _prompt_symbol $set_green$zephyr_PROMPT_SYMBOL_ROOT
-  else
-    set _prompt_symbol $set_red$zephyr_PROMPT_SYMBOL_ROOT
-  end
-else
-  if test $last_status = 0
-    set _prompt_symbol $set_green$zephyr_PROMPT_SYMBOL
-  else
-    set _prompt_symbol $set_red$zephyr_PROMPT_SYMBOL
-  end
-end
+    echo ''
+    echo -s $cwd $git_info $normal '' $node_info '' $duration '' $zephyr_GIT_USER_INFO ''
 
-if test $CMD_DURATION -lt 1000
-  set duration ''
-else
-  set duration $set_magenta ' ' (math "$CMD_DURATION/1000")'s'
-end
-
-
-  # Notify if a command took more than 5 minutes
-  # if [ "$CMD_DURATION" -gt 300000 ]
-  #   echo The last command took (math "$CMD_DURATION/1000") seconds.
-  # end
-  echo ''
-  echo -s $cwd $git_info $normal '' $node_info '' $duration ''
-
-  echo -s $_prompt_symbol ' '
+    echo -s $_prompt_symbol ' '
 end
