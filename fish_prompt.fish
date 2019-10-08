@@ -114,7 +114,7 @@ function fish_prompt
     end
 
     echo ''
-    echo -s $cwd $git_info $normal '' $node_info '' $duration '' $zephyr_GIT_USER_INFO ''
+    echo -s $cwd $git_info $normal '' $node_info '' $duration ''
 
     echo -s $_prompt_symbol ' '
 end
