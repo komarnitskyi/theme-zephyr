@@ -26,11 +26,11 @@ set zephyr_GIT_DIVERGED "$set_cyan ⇡$set_magenta⇣$set_normal"
 # git
 
 function _is_git_dirty
-    echo (command git status -s --ignore-submodules=dirty ^/dev/null)
+    echo (command git status -s --ignore-submodules=dirty 2>/dev/null)
 end
 
 function _git_branch_name
-    echo (command git symbolic-ref HEAD ^/dev/null | sed -e 's|^refs/heads/||')
+    echo (command git symbolic-ref HEAD 2>/dev/null | sed -e 's|^refs/heads/||')
 end
 
 # node
@@ -50,7 +50,7 @@ function fish_prompt
         set node_info " $zephyr_NODE_SYMBOL$set_green $node_version$set_normal"
     end
 
-    set -l push_or_pull (command git status --porcelain ^/dev/null -b)
+    set -l push_or_pull (command git status --porcelain 2>/dev/null -b)
     set -l is_behind
     set -l is_ahead
     set -l git_on 'on '
