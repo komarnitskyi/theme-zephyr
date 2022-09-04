@@ -1,5 +1,4 @@
-# name: prfx
-
+# name: zephyr
 set fish_color_command green
 set fish_color_error red
 
@@ -11,20 +10,19 @@ set set_green (set_color -o green)
 set set_magenta (set_color -o magenta)
 set set_normal (set_color normal)
 
-
+# prompt symbols
 set zephyr_PROMPT_SYMBOL "➜ $set_normal"
 set zephyr_PROMPT_SYMBOL_ROOT "\$ $set_normal"
 
-# node
+# node symbols
 set zephyr_NODE_SYMBOL "$set_green⬢ $set_normal"
 
-# git
+# git symbols
 set zephyr_GIT_BEHIND "$set_magenta ⇣$set_normal"
 set zephyr_GIT_AHEAD "$set_cyan ⇡$set_normal"
 set zephyr_GIT_DIVERGED "$set_cyan ⇡$set_magenta⇣$set_normal"
 
 # git
-
 function _is_git_dirty
     echo (command git status -s --ignore-submodules=dirty 2>/dev/null)
 end
@@ -33,7 +31,7 @@ function _git_branch_name
     echo (command git symbolic-ref HEAD 2>/dev/null | sed -e 's|^refs/heads/||')
 end
 
-# node
+# node version getter
 function _get_node_version
     if [ (command which node) ]
         echo (command node -v)
@@ -72,19 +70,20 @@ function fish_prompt
     end
 
     if [ (_git_branch_name) ]
+        set -l git_branch (_git_branch_name)
 
+        # Set git icon red if git has changes
         if [ (_is_git_dirty) ]
-            set git_powerline $set_red""
+            set git_powerline $set_red""$set_normal
         else
-            set git_powerline $set_green""
+            set git_powerline $set_green""$set_normal
         end
 
+        
         if test (_git_branch_name) = 'master'
-            set -l git_branch (_git_branch_name)
-            set git_info "$set_normal $set_cyan$git_on$git_powerline $set_red$git_branch$set_normal$git_diverged_status$set_cyan"
+            set git_info "$set_normal $set_cyan$git_on$git_powerline $set_yellow$git_branch$set_normal$git_diverged_status$set_cyan"
         else
-            set -l git_branch (_git_branch_name)
-            set git_info "$set_normal $set_cyan$git_on$git_powerline $set_red$git_branch$set_normal$git_diverged_status$set_cyan"
+            set git_info "$set_normal $set_cyan$git_on$git_powerline $set_magenta$git_branch$set_normal$git_diverged_status$set_cyan"
         end
     end
 
@@ -92,6 +91,7 @@ function fish_prompt
     set zephyr_GIT_USER_EMAIL (command git config user.email)
 
     set zephyr_GIT_USER_INFO "$set_cyan by $set_green$zephyr_GIT_USER_NAME ( $set_magenta$zephyr_GIT_USER_EMAIL$set_green ) $set_normal"
+    
     # Check is user has superpower
     if test $USER = 'root'
         if test $last_status = 0
