@@ -74,16 +74,16 @@ function fish_prompt
 
         # Set git icon red if git has changes
         if [ (_is_git_dirty) ]
-            set git_powerline $set_red""$set_normal
+            set git_powerline $set_red""
         else
-            set git_powerline $set_green""$set_normal
+            set git_powerline $set_green""$set_green
         end
 
         
         if test (_git_branch_name) = 'master'
-            set git_info "$set_normal $set_cyan$git_on$git_powerline $set_yellow$git_branch$set_normal$git_diverged_status$set_cyan"
+            set git_info "$set_normal $set_cyan$git_on$git_powerline $git_branch$set_normal$git_diverged_status$set_cyan"
         else
-            set git_info "$set_normal $set_cyan$git_on$git_powerline $set_magenta$git_branch$set_normal$git_diverged_status$set_cyan"
+            set git_info "$set_normal $set_cyan$git_on$git_powerline $git_branch$set_normal$git_diverged_status$set_cyan"
         end
     end
 
